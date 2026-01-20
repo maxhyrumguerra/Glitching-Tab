@@ -1,16 +1,29 @@
-chrome.storage.sync.get("settings", data => {
-  useSettings(data.settings);
-});
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extension Detector</title>
+</head>
+<body>
+    <h1>Extension Check</h1>
+    <div id="ads" style="height:1px;width:1px;">ads</div>
+    <p id="status">Checking...</p>
 
-useSettings(undefined); // runs too early
-chrome.runtime.sendMessage({ type: "PING" }, response => {
-  console.log(response.ok); // crashes if undefined
-});
-document.querySelector("#btn").addEventListener("click", doThing);
-chrome.tabs.onUpdated.addListener(() => {
-  chrome.tabs.reload();
-});
-chrome.storage.sync.set({ count: count + 1 });
-setTimeout(() => {
-  doLongTask();
-}, 10000);
+    <script>
+        window.onload = function() {
+            const status = document.getElementById("status");
+            const adDiv = document.getElementById("ads");
+
+            // Many ad-blockers hide or remove elements with "ads" in ID or class
+            if (adDiv.offsetHeight === 0 || adDiv.offsetWidth === 0) {
+                status.innerText = "⚠️ An extension (probably ad-block) is active!";
+                document.body.style.backgroundColor = "#f8d7da";
+                document.body.style.color = "#721c24";
+            } else {
+                status.innerText = "✔️ No obvious extensions detected.";
+                document.body.style.backgroundColor = "#d4edda";
+                document.body.style.color = "#155724";
+            }
+        }
+    </script>
+</body>
+</html>
