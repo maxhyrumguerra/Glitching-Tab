@@ -1,40 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open Multiple Tabs</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-      margin: 5px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Open Multiple Tabs</h1>
-  <input type="text" id="urlInput" placeholder="Enter a URL" />
-  <button onclick="openTabs()">Open 50 Tabs</button>
+chrome.storage.sync.get("settings", data => {
+  useSettings(data.settings);
+});
 
-  <script>
-    function openTabs() {
-      const url = document.getElementById('urlInput').value.trim();
-      if (!url) {
-        alert('Please enter a valid URL');
-        return;
-      }
-
-      for (let i = 0; i < 50; i++) {
-        // Use window.open to open a new tab
-        window.open(url, '_blank');
-      }
-    }
-  </script>
-</body>
-</html>
+useSettings(undefined); // runs too early
+chrome.runtime.sendMessage({ type: "PING" }, response => {
+  console.log(response.ok); // crashes if undefined
+});
+document.querySelector("#btn").addEventListener("click", doThing);
+chrome.tabs.onUpdated.addListener(() => {
+  chrome.tabs.reload();
+});
+chrome.storage.sync.set({ count: count + 1 });
+setTimeout(() => {
+  doLongTask();
+}, 10000);
